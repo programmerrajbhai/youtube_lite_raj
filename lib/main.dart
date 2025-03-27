@@ -21,16 +21,29 @@ class _YoutubeLiteState extends State<YoutubeLite> {
   static List videoList = [];
 
   Future<void> FatchYoutubeVideo() async {
-    String category = '10';
-    final String apiUrl =
+
+
+    String category = '25';
+ /*   final String apiUrl =
         'https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&videoCategoryId=$category&regionCode=US&maxResults=50&key=AIzaSyCbUcLeYWzSM-bBw7mmoYgMoYPvspjGDYI';
+*/
+
+
+    final String apiUrl =
+        'https://www.googleapis.com/youtube/v3/search?part=snippet&q=বাংলা ইসলামিক&maxResults=50&regionCode=BD&relevanceLanguage=bn&key=AIzaSyCbUcLeYWzSM-bBw7mmoYgMoYPvspjGDYI';
+
 
     var response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       final request = jsonDecode(response.body);
-      videoList = request['items'];  // প্রথমে ডেটা আপডেট করো
-      setState(() {});               // তারপর UI আপডেট করো
+
+
+     // প্রথমে ডেটা আপডেট করো
+      setState(() {
+        videoList = request['items'];
+        videoList.shuffle();
+      });               // তারপর UI আপডেট করো
     } else {
       print('something want worng');
     }
