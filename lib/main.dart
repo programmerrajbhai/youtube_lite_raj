@@ -29,11 +29,8 @@ class _YoutubeLiteState extends State<YoutubeLite> {
 
     if (response.statusCode == 200) {
       final request = jsonDecode(response.body);
-
-      setState(() {});
-      videoList = request['items'];
-      print(response.body);
-      print('ok');
+      videoList = request['items'];  // প্রথমে ডেটা আপডেট করো
+      setState(() {});               // তারপর UI আপডেট করো
     } else {
       print('something want worng');
     }
@@ -48,6 +45,17 @@ class _YoutubeLiteState extends State<YoutubeLite> {
     super.initState();
   }
 
+  Future<void> _refreshData() async {
+    await Future.delayed(Duration(seconds: 2)); // কিছুক্ষণ অপেক্ষা (API কলের মতো)
+    setState(() {
+
+      initState();
+
+    });
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,34 +64,37 @@ class _YoutubeLiteState extends State<YoutubeLite> {
         body: Column(
           children: [
             Expanded(
-              child: ListView.builder(
-                  itemCount: videoList.length,
-                  itemBuilder: (contex, index) {
-                    final video = videoList[index];
-                    final title = video['snippet']['title'];
+              child: RefreshIndicator(
+                onRefresh: _refreshData,
+                child: ListView.builder(
+                    itemCount: videoList.length,
+                    itemBuilder: (contex, index) {
+                      final video = videoList[index];
+                      final title = video['snippet']['title'];
 
-                    final views = video['statistics']?['viewCount'] ?? "0";
-                    final intViews = int.tryParse(views) ?? 0;
-                    final formattedViews =
-                        NumberFormat.compact().format(intViews);
+                      final views = video['statistics']?['viewCount'] ?? "0";
+                      final intViews = int.tryParse(views) ?? 0;
+                      final formattedViews =
+                          NumberFormat.compact().format(intViews);
 
-                    print(formattedViews);
+                      print(formattedViews);
 
-                    final channelTitle = video['snippet']['channelTitle'];
+                      final channelTitle = video['snippet']['channelTitle'];
 
-                    final thumbnailUrl =
-                        video['snippet']['thumbnails']['high']['url'];
-                    final videoId = video['id'] is Map
-                        ? video['id']['videoId']
-                        : video['id'];
+                      final thumbnailUrl =
+                          video['snippet']['thumbnails']['high']['url'];
+                      final videoId = video['id'] is Map
+                          ? video['id']['videoId']
+                          : video['id'];
 
-                    return Items(
-                        thumbnailUrl: thumbnailUrl,
-                        title: title,
-                        channelTitle: channelTitle,
-                        videoId: videoId,
-                        formattedViews: formattedViews);
-                  }),
+                      return Items(
+                          thumbnailUrl: thumbnailUrl,
+                          title: title,
+                          channelTitle: channelTitle,
+                          videoId: videoId,
+                          formattedViews: formattedViews);
+                    }),
+              ),
 
 
 
