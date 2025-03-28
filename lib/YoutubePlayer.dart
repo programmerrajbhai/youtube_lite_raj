@@ -33,10 +33,11 @@ class _VideoPlayerState extends State<VideoPlayer> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.black,
         body: Column(
           children: [
             YoutubePlayer(controller: _controller),
-            Text(widget.text)
+
 
           ],
         ),
