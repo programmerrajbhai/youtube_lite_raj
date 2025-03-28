@@ -2,35 +2,36 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:youtube_lite_raj/Service/Api_Url.dart';
 import 'package:youtube_lite_raj/Service/Server.dart';
 import 'package:youtube_lite_raj/items.dart';
 import 'package:http/http.dart' as http;
 
+import '../Service/Api_Url.dart';
+
 void main() {
-  runApp(Home());
+  runApp(Sports());
 }
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class Sports extends StatefulWidget {
+  const Sports({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Sports> createState() => _SportsState();
 }
 
-class _HomeState extends State<Home> {
+class _SportsState extends State<Sports> {
   static List videoList = [];
 
-  bool isLoading = false;
+  bool isLoading= false;
 
   Future<void> FatchYoutubeVideo() async {
+
     setState(() {
       isLoading = true; // লোডিং শুরু হলে true
     });
 
-
     final String apiUrl =
-        'https://www.googleapis.com/youtube/v3/search?part=snippet&q=${Uri.encodeComponent("বাংলা ইসলামিক")}&maxResults=50&regionCode=BD&relevanceLanguage=bn&key=${Api_Url.myApi}';
+        'https://www.googleapis.com/youtube/v3/search?part=snippet&q=${Uri.encodeComponent("national and international sports news and game")}&maxResults=50&regionCode=BD&relevanceLanguage=bn&key=${Api_Url.myApi}';
 
     var response = await http.get(Uri.parse(apiUrl));
 
@@ -40,7 +41,7 @@ class _HomeState extends State<Home> {
       setState(() {
         videoList = request['items'];
         videoList.shuffle();
-        isLoading = false;
+        isLoading= false;
       });
       print(response.statusCode);
     } else {
@@ -62,11 +63,15 @@ class _HomeState extends State<Home> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(brightness: Brightness.dark),
+      theme: ThemeData(
+          brightness: Brightness.dark
+      ),
       home: Scaffold(
         body: Column(
           children: [
@@ -76,20 +81,21 @@ class _HomeState extends State<Home> {
                 child: ListView.builder(
                   itemCount: videoList.length,
                   itemBuilder: (context, index) {
+
                     final video = videoList[index];
                     final title = video['snippet']['title'];
 
                     final views = video['statistics']?['viewCount'] ?? "0";
                     final intViews = int.tryParse(views) ?? 0;
                     final formattedViews =
-                        NumberFormat.compact().format(intViews);
+                    NumberFormat.compact().format(intViews);
 
                     print(formattedViews);
 
                     final channelTitle = video['snippet']['channelTitle'];
 
                     final thumbnailUrl =
-                        video['snippet']['thumbnails']['high']['url'];
+                    video['snippet']['thumbnails']['high']['url'];
                     final videoId = video['id'] is Map
                         ? video['id']['videoId']
                         : video['id'];

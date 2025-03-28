@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+    <!-- ইন্টারনেট পারমিশন -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:label="youtube_lite_raj"
         android:name="${applicationName}"
